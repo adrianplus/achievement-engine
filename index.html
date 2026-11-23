@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Achievement Engine V1.1｜迷宮成就世界</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="header">
+      <div class="eyebrow">樂在齡中 · INDEPENDENT GAME MODULE</div>
+      <h1>Achievement Engine <span>V1.1</span></h1>
+      <p>圖片世界 Renderer 示範版</p>
+    </header>
+    <section class="panel intro">
+      <div><div class="tag">固定成就世界</div><h2>沉睡的魔法迷宮</h2><p>每完成一個里程碑，就讓世界逐步甦醒。</p></div>
+      <div class="progress-number"><strong id="completed">0</strong><span>/</span><span id="total">45</span><small>已完成里程碑</small></div>
+      <div class="progress-track"><div id="progress-fill"></div></div>
+      <div class="progress-foot"><span>世界復甦進度</span><strong id="percent">0%</strong></div>
+    </section>
+    <section class="panel world-panel">
+      <div class="world-frame"><img id="world-image" src="assets/world/001.jpg" alt="灰階迷宮世界"><div id="object-layers" class="object-layers"></div></div>
+      <div class="world-footer"><span id="world-caption">初始世界｜探險者帶著數獨地圖，進入沉睡的迷宮</span><strong>已解鎖 <span id="reward-count">0</span> 項</strong></div><div class="final-action"><button id="reveal-final" hidden>揭開最終完整世界</button></div>
+      <p class="note">目前先接入四張世界階段圖；第 1～43 關的獨立透明物件圖層，待素材拆解完成後放入 assets/layers 即可顯示。</p>
+    </section>
+    <section class="panel controls">
+      <div class="section-heading"><div><div class="tag">MILESTONE TESTER</div><h2>里程碑測試</h2></div><p id="next-stage">下一關：第 1 關</p></div>
+      <div class="actions"><button id="complete-next" class="primary">完成下一關</button><label for="stage-input">指定關卡</label><input id="stage-input" type="number" min="1" max="45" value="1"><button id="complete-selected">完成指定關卡</button></div>
+      <div class="stage-explain"><span><b>第 1～43 關</b>　物件解鎖圖層</span><span><b>第 44 關</b>　天空恢復色彩（002）</span><span><b>第 45 關</b>　迷宮與完整世界（003 → 004）</span></div>
+      <div id="message" class="message" role="status">依序完成關卡，逐步喚醒這座迷宮世界。</div>
+      <div class="tools"><button id="export" class="secondary">匯出進度</button><label class="secondary file-button">匯入進度<input id="import-file" type="file" accept="application/json"></label><button id="reset" class="danger">重設示範</button></div>
+    </section>
+    <footer>V1.1 · 圖片世界展示版 · 核心引擎沿用 V1.0 · 進度獨立保存於目前瀏覽器</footer>
+  </main>
+  <script src="core/achievement-engine.js"></script><script src="data/demo-config.js"></script><script src="renderer/demo.js"></script>
+</body></html>
