@@ -9,7 +9,7 @@
   <main class="shell">
     <header class="header">
       <div class="eyebrow">樂在齡中 · INDEPENDENT GAME MODULE</div>
-      <h1>Achievement Engine <span>V1.1</span></h1>
+      <h1>Achievement Engine <span>V1.3</span></h1>
       <p>圖片世界 Renderer 示範版</p>
     </header>
     <section class="panel intro">
@@ -25,12 +25,12 @@
     </section>
     <section class="panel controls">
       <div class="section-heading"><div><div class="tag">MILESTONE TESTER</div><h2>里程碑測試</h2></div><p id="next-stage">下一關：第 1 關</p></div>
-      <div class="actions"><button id="complete-next" class="primary">完成下一關</button><label for="stage-input">指定關卡</label><input id="stage-input" type="number" min="1" max="45" value="1"><button id="complete-selected">完成指定關卡</button></div>
+      <div class="actions"><button id="complete-next" class="primary">完成下一關</button><span class="tester-hint">測試時依序解鎖，每次只完成一個里程碑。</span></div>
       <div class="stage-explain"><span><b>第 1～43 關</b>　物件解鎖圖層</span><span><b>第 44 關</b>　天空恢復色彩（002）</span><span><b>第 45 關</b>　迷宮與完整世界（003 → 004）</span></div>
       <div id="message" class="message" role="status">依序完成關卡，逐步喚醒這座迷宮世界。</div>
       <div class="tools"><button id="export" class="secondary">匯出進度</button><label class="secondary file-button">匯入進度<input id="import-file" type="file" accept="application/json"></label><button id="reset" class="danger">重設示範</button></div>
     </section>
-    <footer>V1.1 · 圖片世界展示版 · 核心引擎沿用 V1.0 · 進度獨立保存於目前瀏覽器</footer>
+    <footer>V1.3 · 依序解鎖測試版 · 核心引擎沿用 V1.0 · 進度獨立保存於目前瀏覽器</footer>
   </main>
   <script src="core/achievement-engine.js"></script><script src="data/demo-config.js"></script><script src="renderer/demo.js"></script>
 </body></html>

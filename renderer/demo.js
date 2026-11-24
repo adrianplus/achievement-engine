@@ -59,7 +59,6 @@
     $('message').textContent = message;
     $('reward-count').textContent = progress.unlockedCount;
     $('next-stage').textContent = progress.completed >= 45 ? '全部完成' : `下一關：第 ${progress.completed + 1} 關`;
-    $('stage-input').value = Math.min(45, progress.completed + 1);
     renderWorld();
     document.querySelectorAll('[data-stage]').forEach(button => {
       const stage = Number(button.dataset.stage);
@@ -75,10 +74,15 @@
 
   $('reveal-final').addEventListener('click', () => { revealFinalWorld = true; message = '最終完整世界已揭曉！'; render(); });
   $('complete-next').addEventListener('click', () => {
-    const next = engine.getProgress().completed + 1;
+    // 僅允許依序完成下一個里程碑，避免示範介面跳關造成進度與關卡順序不一致。
+    const completed = engine.getState().completedEvents.length;
+    const next = completed + 1;
     if (next <= 45) completeStage(next);
+    else {
+      message = '45 個里程碑已全部完成。';
+      render();
+    }
   });
-  $('complete-selected').addEventListener('click', () => completeStage(Number($('stage-input').value)));
   $('export').addEventListener('click', () => {
     const blob = new Blob([engine.exportProgress()], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
