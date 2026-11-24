@@ -1,0 +1,1 @@
+window.ACHIEVEMENT_LAYER_BOUNDS = {"object-01": [475, 715, 118, 108]};

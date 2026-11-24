@@ -4,13 +4,15 @@
   const $ = id => document.getElementById(id);
   const engine = new AchievementEngine({ config, onUnlock: render });
   let message = '依序完成關卡，逐步喚醒這座迷宮世界。';
-  let revealFinalWorld = false;
+  let finalRevealStep = Number(localStorage.getItem('achievement-engine:maze-world-demo:final-reveal-step') || 0);
+  if (![0, 1, 2].includes(finalRevealStep)) finalRevealStep = 0;
 
   const imagePaths = {
     initial: 'assets/world/001.jpg',
     sky: 'assets/world/002.jpg',
     maze: 'assets/world/003.jpg',
-    final: 'assets/world/004.jpg'
+    finalUnsolved: 'assets/world/004.jpg',
+    finalSolved: 'assets/world/005.jpg'
   };
 
   function unlockedStageCount() {
@@ -19,34 +21,23 @@
 
   function renderWorld() {
     const count = unlockedStageCount();
-    let src = imagePaths.initial;
-    let caption = '初始世界｜探險者帶著數獨地圖，進入沉睡的迷宮';
-    if (count >= 45 && revealFinalWorld) {
-      src = imagePaths.final;
-      caption = '世界完全甦醒｜45 個里程碑全部完成';
-    } else if (count >= 45) {
-      src = imagePaths.maze;
-      caption = '迷宮恢復色彩｜最後的世界即將揭曉';
-    } else if (count >= 44) {
-      src = imagePaths.sky;
-      caption = '天空恢復色彩';
-    }
-    $('world-image').src = src;
+    const caption = count === 0 ? '初始世界｜空白迷宮，等待第一隻蝴蝶出現' : '第1步完成｜蝴蝶已出現，並留在迷宮裡';
+    $('world-image').src = imagePaths.initial;
     $('world-image').alt = caption;
     $('world-caption').textContent = caption;
-    $('world-image').classList.toggle('final-reveal', count >= 45 && revealFinalWorld);
-    $('reveal-final').hidden = !(count >= 45) || revealFinalWorld;
-    // 1～43 的透明物件圖層由 manifest 自動載入；尚未提供的圖層會略過，不影響進度資料。
-    const layerHost = $('object-layers');
-    layerHost.replaceChildren();
-    for (let n = 1; n <= Math.min(count, 43); n++) {
-      const id = `object-${String(n).padStart(2, '0')}`;
+    $('reveal-final').hidden = true;
+    const solutionButton = $('reveal-solution');
+    if (solutionButton) solutionButton.hidden = true;
+    const host = $('object-layers');
+    host.replaceChildren();
+    if (count >= 1) {
       const img = document.createElement('img');
-      img.src = `assets/layers/${id}.png`;
-      img.alt = '';
-      img.dataset.layer = id;
-      img.onerror = () => img.remove();
-      layerHost.appendChild(img);
+      img.src = 'assets/layers/object-01.png';
+      img.alt = '第1步解鎖的蝴蝶';
+      img.dataset.layer = 'object-01';
+      img.style.left = '23.193%'; img.style.top = '62.012%';
+      img.style.width = '5.762%'; img.style.height = '8.934%';
+      host.appendChild(img);
     }
   }
 
@@ -72,12 +63,23 @@
     render();
   }
 
-  $('reveal-final').addEventListener('click', () => { revealFinalWorld = true; message = '最終完整世界已揭曉！'; render(); });
+  $('reveal-final').addEventListener('click', () => {
+    finalRevealStep = 1;
+    localStorage.setItem('achievement-engine:maze-world-demo:final-reveal-step', '1');
+    message = '完整彩色世界已揭曉，接下來可以查看數獨答案。';
+    render();
+  });
+  $('reveal-solution').addEventListener('click', () => {
+    finalRevealStep = 2;
+    localStorage.setItem('achievement-engine:maze-world-demo:final-reveal-step', '2');
+    message = '數獨最終答案揭曉！45 個里程碑全部完成。';
+    render();
+  });
   $('complete-next').addEventListener('click', () => {
     // 僅允許依序完成下一個里程碑，避免示範介面跳關造成進度與關卡順序不一致。
     const completed = engine.getState().completedEvents.length;
     const next = completed + 1;
-    if (next <= 45) completeStage(next);
+    if (next <= config.totalMilestones) completeStage(next);
     else {
       message = '45 個里程碑已全部完成。';
       render();
@@ -97,7 +99,11 @@
   });
   $('reset').addEventListener('click', () => {
     if (!confirm('確定清除這個迷宮世界的成就進度？')) return;
-    engine.resetProgress(); revealFinalWorld = false; message = '示範進度已清除。'; render();
+    engine.resetProgress();
+    finalRevealStep = 0;
+    localStorage.removeItem('achievement-engine:maze-world-demo:final-reveal-step');
+    message = '示範進度已清除。';
+    render();
   });
   render();
 })();
