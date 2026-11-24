@@ -4,6 +4,8 @@
   const $ = id => document.getElementById(id);
   const engine = new AchievementEngine({ config, onUnlock: render });
   let message = '依序完成關卡，逐步喚醒這座迷宮世界。';
+  let hasInitializedWorld = false;
+  let lastRenderedCount = unlockedStageCount();
   let finalRevealStep = Number(localStorage.getItem('achievement-engine:maze-world-demo:final-reveal-step') || 0);
   if (![0, 1, 2].includes(finalRevealStep)) finalRevealStep = 0;
 
@@ -28,17 +30,32 @@
     $('reveal-final').hidden = true;
     const solutionButton = $('reveal-solution');
     if (solutionButton) solutionButton.hidden = true;
+
+    // 只有本次遊玩剛解鎖時播放出現動畫；重新整理不會重播。
+    const shouldAnimate = hasInitializedWorld && count > lastRenderedCount;
     const host = $('object-layers');
-    host.replaceChildren();
-    if (count >= 1) {
-      const img = document.createElement('img');
-      img.src = 'assets/layers/object-01.png';
-      img.alt = '第1步解鎖的蝴蝶';
-      img.dataset.layer = 'object-01';
-      img.style.left = '23.193%'; img.style.top = '62.012%';
-      img.style.width = '5.762%'; img.style.height = '8.934%';
-      host.appendChild(img);
+    if (count !== lastRenderedCount || !hasInitializedWorld) {
+      host.replaceChildren();
+      if (count >= 1) {
+        const flash = document.createElement('div');
+        flash.className = shouldAnimate ? 'event-flash play' : 'event-flash';
+        flash.setAttribute('aria-hidden', 'true');
+        flash.style.left = '21.9%'; flash.style.top = '60.7%';
+        flash.style.width = '8.4%'; flash.style.height = '11.5%';
+        host.appendChild(flash);
+
+        const img = document.createElement('img');
+        img.src = 'assets/layers/object-01.png';
+        img.alt = '第1步解鎖的蝴蝶';
+        img.dataset.layer = 'object-01';
+        img.style.left = '23.193%'; img.style.top = '62.012%';
+        img.style.width = '5.762%'; img.style.height = '8.934%';
+        if (shouldAnimate) img.classList.add('butterfly-appear');
+        host.appendChild(img);
+      }
     }
+    lastRenderedCount = count;
+    hasInitializedWorld = true;
   }
 
   function render() {
