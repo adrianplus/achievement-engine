@@ -6,7 +6,10 @@
 
 /* Achievement reveal: butterfly materializes, then the event light flashes twice. */
 .object-layers .butterfly-appear{
+  -webkit-animation: butterflyMaterialize 3.75s cubic-bezier(.18,.72,.24,1) both;
   animation: butterflyMaterialize 3.75s cubic-bezier(.18,.72,.24,1) both;
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
   transform-origin: 50% 55%;
 }
 .object-layers .event-flash{
@@ -19,7 +22,10 @@
   mix-blend-mode:screen;
 }
 .object-layers .event-flash.play{
+  -webkit-animation: eventFlashTwice 5.7s ease-out both;
   animation: eventFlashTwice 5.7s ease-out both;
+  -webkit-transform:translateZ(0);
+  transform:translateZ(0);
 }
 @keyframes butterflyMaterialize{
   0%{opacity:.12;filter:brightness(1.55) saturate(.55);transform:scale(.82)}
@@ -37,5 +43,13 @@
   100%{opacity:0;transform:scale(1.45)}
 }
 @media (prefers-reduced-motion:reduce){
-  .object-layers .butterfly-appear,.object-layers .event-flash.play{animation:none;opacity:1}
+  /* 保留可辨識的解鎖回饋，但縮短動態幅度與時間。 */
+  .object-layers .butterfly-appear{
+    -webkit-animation-duration:1.5s;
+    animation-duration:1.5s;
+  }
+  .object-layers .event-flash.play{
+    -webkit-animation-duration:2.2s;
+    animation-duration:2.2s;
+  }
 }

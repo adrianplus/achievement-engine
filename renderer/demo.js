@@ -38,7 +38,7 @@
       host.replaceChildren();
       if (count >= 1) {
         const flash = document.createElement('div');
-        flash.className = shouldAnimate ? 'event-flash play' : 'event-flash';
+        flash.className = 'event-flash';
         flash.setAttribute('aria-hidden', 'true');
         flash.style.left = '21.9%'; flash.style.top = '60.7%';
         flash.style.width = '8.4%'; flash.style.height = '11.5%';
@@ -50,8 +50,19 @@
         img.dataset.layer = 'object-01';
         img.style.left = '23.193%'; img.style.top = '62.012%';
         img.style.width = '5.762%'; img.style.height = '8.934%';
-        if (shouldAnimate) img.classList.add('butterfly-appear');
         host.appendChild(img);
+
+        // iOS Safari/部分 Android WebView 對「新增節點時就帶 animation class」
+        // 偶爾不會啟動動畫；先插入，再等下一個畫面影格加上 class。
+        if (shouldAnimate) {
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              if (!img.isConnected || !flash.isConnected) return;
+              img.classList.add('butterfly-appear');
+              flash.classList.add('play');
+            });
+          });
+        }
       }
     }
     lastRenderedCount = count;
